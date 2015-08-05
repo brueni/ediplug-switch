@@ -14,3 +14,5 @@ if [ "$2" = "status" ]; then
 else
 	echo $2 > state_$1.txt
 fi
+
+cp state_$1.txt /var/www/states/light_$1.txt
