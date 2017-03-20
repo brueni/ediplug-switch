@@ -25,10 +25,4 @@ else
 	echo $2 > state_$1.txt
 fi
 
-#if [ "$2" = "status" ]; then
-#	echo $output | grep -oPm1 "(?<=<Device.System.Power.State>)[^<]+" > state_$1.txt
-#else
-#	echo $2 > state_$1.txt
-#fi
-
 cp state_$1.txt /var/www/states/light_$1.txt
