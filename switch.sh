@@ -7,12 +7,28 @@ cd `dirname $0`
 username="admin"
 password="1234"
 
-output=`curl --silent -d @$2.xml http://$username:$password@$1:10000/smartplug.cgi`
-
-if [ "$2" = "status" ]; then
+if [ "$2" = "toggle" ]; then
+	state=`cat state_$1.txt`
+	if [[ $state == "ON" ]]; then
+		#Is on, switching off
+		output=`curl --silent -d @off.xml http://$username:$password@$1:10000/smartplug.cgi`
+		echo "OFF" > state_$1.txt
+	else
+		#Is off, switching on
+		output=`curl --silent -d @on.xml http://$username:$password@$1:10000/smartplug.cgi`
+		echo "ON" > state_$1.txt
+	fi
+elif [ "$2" = "status" ]; then
 	echo $output | grep -oPm1 "(?<=<Device.System.Power.State>)[^<]+" > state_$1.txt
 else
+	output=`curl --silent -d @$2.xml http://$username:$password@$1:10000/smartplug.cgi`
 	echo $2 > state_$1.txt
 fi
+
+#if [ "$2" = "status" ]; then
+#	echo $output | grep -oPm1 "(?<=<Device.System.Power.State>)[^<]+" > state_$1.txt
+#else
+#	echo $2 > state_$1.txt
+#fi
 
 cp state_$1.txt /var/www/states/light_$1.txt
